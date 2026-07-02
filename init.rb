@@ -6,7 +6,7 @@ Redmine::Plugin.register :redmine_issue_merge do
   name        'Redmine Issue Merge'
   author      'Chris'
   description 'Fuehrt ein Duplikat-Ticket in ein bestehendes Ticket ueber: alle Inhalte als EIN Journal-Eintrag (in konfigurierbarem CSS-Kasten), Anhaenge umgehaengt, Duplikat als Duplikat verlinkt und geschlossen. Keine Schema-/DB-Migration noetig.'
-  version     '1.2.1'
+  version     '1.1.0'
   url         ''
   author_url  ''
 

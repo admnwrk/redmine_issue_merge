@@ -57,7 +57,6 @@ module RedmineIssueMerge
             if (!srcA) { wrap.remove(); return; }
 
             document.querySelectorAll('#content .contextual').forEach(function(ctx){
-              if (ctx.closest('.journal, .description, .attachments, #issue_tree, #relations')) return; // untergeordnete Leisten auslassen
               if (ctx.querySelector('a.redmine-merge-clone')) return; // schon drin
               var a = srcA.cloneNode(true);
               a.classList.add('redmine-merge-clone');

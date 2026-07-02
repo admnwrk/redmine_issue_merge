@@ -1,67 +1,107 @@
 # Redmine Issue Merge
 
-Fuehrt ein Duplikat-Ticket in ein bestehendes Ticket ueber – gedacht fuer den
-Dispatch-Workflow, wenn eine Mail ohne `[#Ticketnummer]` im Betreff ein zweites
-Ticket zum selben Thema erzeugt hat.
+Merge a duplicate issue into an existing one. Built for the dispatch workflow
+where an incoming mail without `[#issue-number]` in the subject spawns a second
+issue about the same topic.
 
-Getestet gegen Redmine 6.1.x (Ruby 3.4 / Rails 7.2), CommonMark als Textformat.
+Tested against Redmine 6.1.x (Ruby 3.4 / Rails 7.2) with CommonMark text
+formatting.
 
-## Was es tut
+> Deutsche Version: siehe [README_de.md](README_de.md).
 
-Beim Ueberfuehren von Quellticket -> Zielticket:
+## What it does
 
-1. **Ein** Journal-Eintrag im Zielticket mit Beschreibung + (optional) allen
-   Notizen des Duplikats. Erste Zeile ist eine frei editierbare Kopfzeile
-   (Default aus den Einstellungen, z. B. `Eintrag/Merge aus Duplikat #123`).
-   Der Eintrag wird in einem konfigurierbaren CSS-Kasten dargestellt.
-2. **Anhaenge** werden vom Duplikat ins Zielticket umgehaengt (nur der
-   Datenbank-Fremdschluessel wandert, die Dateien bleiben unberuehrt).
-3. Beziehung **"Duplikat von"** zwischen Duplikat und Zielticket.
-4. Das Duplikat wird **geschlossen** (nicht geloescht) und erhaelt einen
-   Rueckverweis im Journal – so kann man jederzeit nachschauen.
+When merging a source issue → target issue:
 
-Keine Schema-Migration, kein manuelles SQL, keine Aenderung an Redmine-Core-
-Dateien. Es werden ausschliesslich die normalen Models verwendet.
+1. **One** journal entry is added to the target issue containing the source
+   description and (optionally) all of the source's notes. The first line is a
+   freely editable header (default from the settings, e.g.
+   `Eintrag/Merge aus Duplikat #123`). The entry is rendered inside a
+   configurable CSS box.
+2. **Attachments** are moved from the duplicate to the target issue (only the
+   database foreign key changes; the files on disk stay untouched).
+3. A **"duplicates"** relation is created between the duplicate and the target.
+4. The duplicate is **closed** (not deleted) and gets a back-reference note, so
+   you can always look it up later.
 
-## Wie der CSS-Kasten funktioniert
+No schema migration, no manual SQL, no changes to Redmine core files. Only the
+regular models are used.
 
-Redmine sanitized jede Journal-Notiz beim Anzeigen; Inline-HTML mit `style`
-wuerde entfernt. Das Plugin loest das per JavaScript: ein kleines Skript wird
-in den Seitenkopf injiziert (Hook `view_layouts_base_html_head`), findet die
-Notiz an einem unsichtbaren Marker (`%%MERGE%%`) am Notizanfang, entfernt den
-Marker und setzt die Klasse `redmine-merge-box` auf den Notiz-Container. Das
-zugehoerige CSS (border/padding/background-color/color aus den
-Plugin-Einstellungen) kommt aus demselben Hook. Dieser Weg ist unabhaengig
-davon, ueber welchen internen Render-Pfad Redmine die Notiz ausgibt (in 6.1
-wurde das mehrfach umgebaut).
+## Installation (Docker volume mount)
 
-## Installation (Docker-Volume-Mount)
-
-Ordner `redmine_issue_merge` nach `plugins/` mounten/kopieren, dann:
+Mount/copy the `redmine_issue_merge` folder into `plugins/`, then:
 
     docker compose exec redmine bundle exec rake redmine:plugins:migrate RAILS_ENV=production
     docker compose restart redmine
 
-(Eine Migration existiert nicht; der Migrate-Task ist nur Konvention und
-schadet nicht.) Anschliessend unter
-**Administration -> Rollen** die Berechtigung *"Tickets zusammenfuehren"*
-den gewuenschten Rollen geben und unter
-**Administration -> Plugins -> Konfiguration** Kasten-Stil, Kopfzeilen-Vorlage
-und Schliess-Status setzen.
+There is no migration; the migrate task is convention only and does no harm.
+The restart is what actually loads the plugin code. No `bundle install` is
+required (no extra gems).
 
-## Benutzung
+## Configuration
 
-Auf der Ticketseite des Duplikats unten den Link **"In Ticket ueberfuehren"**
-oeffnen, Zielticketnummer eingeben, Kopfzeile ggf. anpassen, absenden.
+After the restart, set up two things:
 
-## Hinweise / Grenzen
+**1. Permission** under **Administration → Roles and permissions**: grant the
+**"Merge issues"** permission to the roles that are allowed to merge. Without
+it the action link does not appear.
 
-- Die Mailverlaeufe werden 1:1 als Text uebernommen (keine Datumssortierung,
-  bewusst so gewollt). Reihenfolge = chronologisch nach Erstellung.
-- Inline im Quelltext per Dateiname referenzierte Bilder verlinken nach dem
-  Umhaengen weiterhin korrekt, da die Anhaenge nun am Zielticket haengen.
-- Der Merge ist in eine Transaktion gekapselt: schlaegt ein Schritt fehl
-  (z. B. Pflichtfeld beim Schliessen), wird nichts veraendert.
-- Das Schliessen des Duplikats respektiert eure Workflow-Pflichtfelder. Wenn
-  euer Workflow beim Schliessen Felder erzwingt, kann der Merge daran
-  scheitern – dann Pflichtfelder lockern oder Status entsprechend waehlen.
+**2. Plugin settings** under **Administration → Plugins → Configure** (for the
+"Redmine Issue Merge" plugin):
+
+<!-- Screenshot of the configuration page -->
+![Plugin configuration](doc/configuration.png)
+
+| Setting | Meaning |
+|---|---|
+| **Header template** | Default text of the merge entry's first line. The `%{source}` placeholder is replaced by the duplicate's number. Still editable in the merge form. |
+| **Include duplicate's notes** | If enabled, all notes (mail history) of the duplicate are included in the entry. If disabled, only the description is copied. |
+| **Status for closed duplicate** | Status applied to the duplicate when merging (only closed statuses are listed). Tip: create a dedicated closed status such as "Duplicate". |
+| **border** | CSS border of the box, e.g. `1px solid #c9a227`. |
+| **padding** | CSS padding, e.g. `10px 12px`. |
+| **background-color** | Background colour, e.g. `#fff8e1`. |
+| **color** | Text colour, e.g. `#1a1a1a`. |
+
+## Usage
+
+On the **duplicate's** issue page, open the **"Merge into another issue"** link
+in the action bar (`.contextual`, both the top and bottom bars, placed before
+the "More" menu). Enter the target issue number, adjust the header if needed,
+and submit. The duplicate is closed and its content ends up in the target
+issue.
+
+## How the CSS box works
+
+Redmine sanitizes every journal note on display; inline HTML with `style` would
+be stripped. The plugin solves this via JavaScript: a small script is injected
+into the page head (hook `view_layouts_base_html_head`), finds the note by an
+invisible marker (`%%MERGE%%`) at its start, removes the marker and adds the
+class `redmine-merge-box` to the note container. The matching CSS
+(border/padding/background-color/color from the settings) is emitted from the
+same hook. This approach is independent of whichever internal render path
+Redmine uses for the note (which changed several times in 6.1).
+
+The action link is likewise injected into every `.contextual` bar via
+JavaScript (before `span.drdn`). Its icon uses Redmine's `sprite_icon`
+(inline SVG) so it looks like the other action links.
+
+## Notes / limitations
+
+- Mail histories are copied verbatim as text (no date sorting, by design).
+  Order is chronological by creation time.
+- Images referenced inline by filename keep working after the move, because the
+  attachments now belong to the target issue.
+- The merge runs inside a transaction: if any step fails (e.g. a required field
+  on close), nothing is changed.
+- Closing the duplicate respects your workflow's required fields. If your
+  workflow enforces fields on close, the merge may fail there – relax the
+  required fields or pick an appropriate status.
+- The box rendering and the contextual link require JavaScript to be enabled.
+  The actual merge (data transfer) is entirely server-side.
+
+## Uninstall
+
+Remove the plugin folder and restart Redmine. As there is no migration, no DB
+steps are needed. Existing merges remain intact; the invisible `%%MERGE%%`
+marker will then no longer be removed and shows up as a text line at the start
+of the affected note.
