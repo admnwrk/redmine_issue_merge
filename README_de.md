@@ -84,6 +84,7 @@ eingebunden (jeweils vor `span.drdn`). Das Icon nutzt Redmines `sprite_icon`
 
 ## Hinweise / Grenzen
 
+- Ab v1.3.0 ist **Bearbeitungsrecht (`edit_issues`) auf beiden Projekten** nötig – dem des Duplikats und dem des Zieltickets. Private Notizen des Duplikats werden bewusst **nicht** übernommen.
 - Die Mailverläufe werden 1:1 als Text übernommen (keine Datumssortierung,
   bewusst so gewollt). Reihenfolge = chronologisch nach Erstellung.
 - Inline per Dateiname referenzierte Bilder verlinken nach dem Umhängen

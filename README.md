@@ -87,6 +87,7 @@ JavaScript (before `span.drdn`). Its icon uses Redmine's `sprite_icon`
 
 ## Notes / limitations
 
+- As of v1.3.0, **edit permission (`edit_issues`) is required on both projects** – the duplicate's and the target's. Private notes of the duplicate are deliberately **not** copied.
 - Mail histories are copied verbatim as text (no date sorting, by design).
   Order is chronological by creation time.
 - Images referenced inline by filename keep working after the move, because the

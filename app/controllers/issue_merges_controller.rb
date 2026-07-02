@@ -19,8 +19,21 @@ class IssueMergesController < ApplicationController
       flash[:error] = l(:error_merge_same_issue)
       return redirect_to(new_issue_merge_path(issue_id: @issue.id))
     end
+    # Fix 1: Schreibrecht wird auf BEIDEN Seiten geprueft. Quellticket wird
+    # geschlossen (edit_issues Quelle), Zielticket bekommt Notiz + Anhaenge
+    # (edit_issues Ziel). Sichtbarkeit des Ziels allein reicht NICHT.
     unless User.current.allowed_to?(:edit_issues, @issue.project)
       flash[:error] = l(:error_merge_no_edit_permission)
+      return redirect_to(new_issue_merge_path(issue_id: @issue.id))
+    end
+    unless User.current.allowed_to?(:edit_issues, target.project)
+      flash[:error] = l(:error_merge_no_edit_permission_target)
+      return redirect_to(new_issue_merge_path(issue_id: @issue.id))
+    end
+    # Vorab-Pruefung: gibt es ueberhaupt einen geschlossenen Zielstatus?
+    # (Eigene, sprechende Meldung statt der generischen Fehlerbehandlung.)
+    if closed_status.nil?
+      flash[:error] = l(:error_merge_no_closed_status)
       return redirect_to(new_issue_merge_path(issue_id: @issue.id))
     end
 
@@ -38,15 +51,21 @@ class IssueMergesController < ApplicationController
     flash[:error] = l(:error_merge_target_not_found)
     redirect_to(new_issue_merge_path(issue_id: @issue.id))
   rescue StandardError => e
+    # Fix 5: Nur eine generische Meldung an den Benutzer, keine internen
+    # Details (SQL/Pfade). Die echte Exception nur ins Server-Log.
     Rails.logger.error("[redmine_issue_merge] #{e.class}: #{e.message}\n#{e.backtrace&.first(5)&.join("\n")}")
-    flash[:error] = l(:error_merge_failed, msg: e.message)
+    flash[:error] = l(:error_merge_failed)
     redirect_to(new_issue_merge_path(issue_id: @issue.id))
   end
 
   private
 
   def find_issue
-    @issue   = Issue.find(params[:issue_id])
+    @issue = Issue.find(params[:issue_id])
+    # Fix 4: Ticket-Ebenen-Sichtbarkeit erzwingen (die Projekt-Autorisierung
+    # allein deckt z. B. "nur eigene Tickets" nicht ab).
+    return render_403 unless @issue.visible?
+
     @project = @issue.project
   rescue ActiveRecord::RecordNotFound
     render_404
@@ -122,7 +141,14 @@ class IssueMergesController < ApplicationController
     end
 
     if Setting.plugin_redmine_issue_merge['include_source_journals'].to_s == '1'
-      source.journals.where.not(notes: [nil, '']).reorder(:created_on).each do |j|
+      # Fix 2: KEINE privaten Notizen uebernehmen - der Merge-Eintrag ist
+      # oeffentlich; private Notizen wuerden sonst fuer alle sichtbar, die das
+      # Zielticket sehen koennen. private_notes ist in Redmine NOT NULL
+      # (Default false), daher genuegt der explizite false-Filter.
+      source.journals
+             .where.not(notes: [nil, ''])
+             .where(private_notes: false)
+             .reorder(:created_on).each do |j|
         parts << ''
         parts << '----'
         parts << ''

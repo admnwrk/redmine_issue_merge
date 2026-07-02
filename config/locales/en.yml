@@ -18,8 +18,9 @@ en:
   error_merge_target_not_found: "Target issue not found or not visible."
   error_merge_same_issue: "Source and target issue are identical."
   error_merge_no_edit_permission: "No permission to edit/close this issue."
+  error_merge_no_edit_permission_target: "No permission to edit the target issue."
   error_merge_no_closed_status: "No closed status configured/available."
-  error_merge_failed: "Merge failed: %{msg}"
+  error_merge_failed: "Merge failed. See server log for details."
 
   setting_header_template: "Header template"
   setting_header_template_hint: "Placeholder %{source} is replaced by the duplicate's number."

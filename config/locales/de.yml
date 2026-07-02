@@ -18,8 +18,9 @@ de:
   error_merge_target_not_found: "Zielticket nicht gefunden oder nicht sichtbar."
   error_merge_same_issue: "Quell- und Zielticket sind identisch."
   error_merge_no_edit_permission: "Keine Berechtigung, dieses Ticket zu bearbeiten/schliessen."
+  error_merge_no_edit_permission_target: "Keine Berechtigung, das Zielticket zu bearbeiten."
   error_merge_no_closed_status: "Kein geschlossener Status konfiguriert/vorhanden."
-  error_merge_failed: "Zusammenfuehrung fehlgeschlagen: %{msg}"
+  error_merge_failed: "Zusammenführung fehlgeschlagen. Details siehe Server-Log."
 
   setting_header_template: "Vorlage Kopfzeile"
   setting_header_template_hint: "Platzhalter %{source} wird durch die Nummer des Duplikats ersetzt."

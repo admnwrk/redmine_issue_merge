@@ -12,10 +12,10 @@ module RedmineIssueMerge
       s = Setting.plugin_redmine_issue_merge
 
       css = +'.redmine-merge-box{'
-      css << "border:#{s['box_border']};"
-      css << "padding:#{s['box_padding']};"
-      css << "background:#{s['box_background']};"
-      css << "color:#{s['box_color']};"
+      css << "border:#{css_safe(s['box_border'])};"
+      css << "padding:#{css_safe(s['box_padding'])};"
+      css << "background:#{css_safe(s['box_background'])};"
+      css << "color:#{css_safe(s['box_color'])};"
       css << 'border-radius:4px;margin:4px 0;}'
       css << '.redmine-merge-box p:first-of-type{font-weight:bold;margin-top:0;}'
 
@@ -23,6 +23,16 @@ module RedmineIssueMerge
     end
 
     private
+
+    # Fix 3: CSS-Werte aus den (admin-gesetzten) Einstellungen werden global in
+    # einen <style>-Block geschrieben. Ohne Filter waere ein Wert wie
+    # "#000}</style><script>..." ein Stored-XSS-Vektor. Daher harte Whitelist:
+    # nur Zeichen, die in Farb-/Border-/Padding-Werten vorkommen. Damit sind
+    # <>{}"';:/ und Backslash ausgeschlossen (kein Ausbruch aus style/value,
+    # kein url(...)-Trick). Zusaetzlich Laengenbegrenzung.
+    def css_safe(value)
+      value.to_s.gsub(/[^a-zA-Z0-9 #%.,()\-]/, '')[0, 100].to_s
+    end
 
     # Literales Heredoc: kein Ruby-Escaping, JS wird 1:1 ausgegeben.
     # MARK muss mit RedmineIssueMerge::MARKER uebereinstimmen ('%%MERGE%%').
