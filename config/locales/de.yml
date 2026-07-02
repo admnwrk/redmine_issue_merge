@@ -1,0 +1,34 @@
+de:
+  permission_merge_issues: "Tickets zusammenfuehren"
+
+  button_merge_issue: "In anderes Ticket überführen"
+
+  field_merge_target: "Zielticket (Nummer)"
+  field_merge_header: "Kopfzeile des Eintrags"
+
+  label_merge_source: "Aus Ticket"
+  label_merge_moved_attachments: "Uebernommene Anhaenge"
+
+  text_merge_target_hint: "Nummer des bestehenden Tickets, in das dieses Ticket ueberfuehrt wird."
+  text_merge_explanation: "Beschreibung und alle Notizen dieses Tickets werden als EIN Eintrag in das Zielticket kopiert, die Anhaenge umgehaengt. Dieses Ticket wird als Duplikat verlinkt und geschlossen (nicht geloescht)."
+
+  notice_merge_success: "Ticket wurde in #%{id} ueberfuehrt."
+  notice_merged_into: "In #%{id} ueberfuehrt (Duplikat)."
+
+  error_merge_target_not_found: "Zielticket nicht gefunden oder nicht sichtbar."
+  error_merge_same_issue: "Quell- und Zielticket sind identisch."
+  error_merge_no_edit_permission: "Keine Berechtigung, dieses Ticket zu bearbeiten/schliessen."
+  error_merge_no_closed_status: "Kein geschlossener Status konfiguriert/vorhanden."
+  error_merge_failed: "Zusammenfuehrung fehlgeschlagen: %{msg}"
+
+  setting_header_template: "Vorlage Kopfzeile"
+  setting_header_template_hint: "Platzhalter %{source} wird durch die Nummer des Duplikats ersetzt."
+  setting_include_source_journals: "Notizen des Duplikats mit uebernehmen"
+  setting_include_source_journals_hint: "Wenn aktiv, werden alle Notizen (Mailverlauf) des Duplikats in den Eintrag aufgenommen."
+  setting_closed_status_id: "Status fuer geschlossenes Duplikat"
+  setting_closed_status_id_hint: "Wird beim Ueberfuehren auf das Duplikat gesetzt."
+  setting_box_section: "Darstellung des CSS-Kastens"
+  setting_box_border: "border"
+  setting_box_padding: "padding"
+  setting_box_background: "background-color"
+  setting_box_color: "color (Textfarbe)"

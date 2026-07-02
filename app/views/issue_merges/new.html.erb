@@ -1,0 +1,23 @@
+<h2><%= l(:button_merge_issue) %> &ndash; #<%= @issue.id %>: <%= h(@issue.subject) %></h2>
+
+<%= form_tag(issue_merge_path(issue_id: @issue.id), method: :post) do %>
+  <div class="box tabular">
+    <p>
+      <label for="target_id"><%= l(:field_merge_target) %></label>
+      <%= text_field_tag 'target_id', '', size: 12, placeholder: '#1234' %>
+      <em class="info"><%= l(:text_merge_target_hint) %></em>
+    </p>
+
+    <p>
+      <label for="header_text"><%= l(:field_merge_header) %></label>
+      <%= text_field_tag 'header_text', @default_header, size: 80 %>
+    </p>
+
+    <p><em class="info"><%= l(:text_merge_explanation) %></em></p>
+  </div>
+
+  <p>
+    <%= submit_tag l(:button_merge_issue) %>
+    <%= link_to l(:button_cancel), issue_path(@issue) %>
+  </p>
+<% end %>

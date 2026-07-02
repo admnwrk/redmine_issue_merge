@@ -1,0 +1,34 @@
+en:
+  permission_merge_issues: "Merge issues"
+
+  button_merge_issue: "Merge into another issue"
+
+  field_merge_target: "Target issue (number)"
+  field_merge_header: "Entry header"
+
+  label_merge_source: "From issue"
+  label_merge_moved_attachments: "Moved attachments"
+
+  text_merge_target_hint: "Number of the existing issue this issue will be merged into."
+  text_merge_explanation: "The description and all notes of this issue are copied as ONE entry into the target issue, attachments are moved. This issue is linked as a duplicate and closed (not deleted)."
+
+  notice_merge_success: "Issue merged into #%{id}."
+  notice_merged_into: "Merged into #%{id} (duplicate)."
+
+  error_merge_target_not_found: "Target issue not found or not visible."
+  error_merge_same_issue: "Source and target issue are identical."
+  error_merge_no_edit_permission: "No permission to edit/close this issue."
+  error_merge_no_closed_status: "No closed status configured/available."
+  error_merge_failed: "Merge failed: %{msg}"
+
+  setting_header_template: "Header template"
+  setting_header_template_hint: "Placeholder %{source} is replaced by the duplicate's number."
+  setting_include_source_journals: "Include duplicate's notes"
+  setting_include_source_journals_hint: "If enabled, all notes (mail history) of the duplicate are included in the entry."
+  setting_closed_status_id: "Status for closed duplicate"
+  setting_closed_status_id_hint: "Applied to the duplicate when merging."
+  setting_box_section: "CSS box appearance"
+  setting_box_border: "border"
+  setting_box_padding: "padding"
+  setting_box_background: "background-color"
+  setting_box_color: "color (text color)"

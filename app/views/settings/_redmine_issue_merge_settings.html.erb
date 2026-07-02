@@ -1,0 +1,51 @@
+<% s = settings %>
+
+<p>
+  <label><%= l(:setting_header_template) %></label>
+  <%= text_field_tag 'settings[header_template]', s['header_template'], size: 60 %>
+  <em class="info"><%= l(:setting_header_template_hint) %></em>
+</p>
+
+<p>
+  <label><%= l(:setting_include_source_journals) %></label>
+  <%= hidden_field_tag 'settings[include_source_journals]', '0', id: nil %>
+  <%= check_box_tag 'settings[include_source_journals]', '1', s['include_source_journals'].to_s == '1' %>
+  <em class="info"><%= l(:setting_include_source_journals_hint) %></em>
+</p>
+
+<p>
+  <label><%= l(:setting_closed_status_id) %></label>
+  <%= select_tag 'settings[closed_status_id]',
+        options_from_collection_for_select(
+          IssueStatus.where(is_closed: true).order(:position),
+          :id, :name, s['closed_status_id'].to_i) %>
+  <em class="info"><%= l(:setting_closed_status_id_hint) %></em>
+</p>
+
+<p style="clear:both; padding-top:6px; border-top:1px solid #ddd;">
+  <strong><%= l(:setting_box_section) %></strong>
+</p>
+
+<p>
+  <label><%= l(:setting_box_border) %></label>
+  <%= text_field_tag 'settings[box_border]', s['box_border'], size: 30 %>
+  <em class="info">z. B. <code>1px solid #c9a227</code></em>
+</p>
+
+<p>
+  <label><%= l(:setting_box_padding) %></label>
+  <%= text_field_tag 'settings[box_padding]', s['box_padding'], size: 30 %>
+  <em class="info">z. B. <code>10px 12px</code></em>
+</p>
+
+<p>
+  <label><%= l(:setting_box_background) %></label>
+  <%= text_field_tag 'settings[box_background]', s['box_background'], size: 30 %>
+  <em class="info">z. B. <code>#fff8e1</code></em>
+</p>
+
+<p>
+  <label><%= l(:setting_box_color) %></label>
+  <%= text_field_tag 'settings[box_color]', s['box_color'], size: 30 %>
+  <em class="info">z. B. <code>#1a1a1a</code></em>
+</p>

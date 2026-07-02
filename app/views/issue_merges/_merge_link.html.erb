@@ -1,0 +1,7 @@
+<% if User.current.allowed_to?(:merge_issues, issue.project) %>
+  <p class="redmine-merge-action">
+    <%= link_to sprite_icon('copy', l(:button_merge_issue)),
+                new_issue_merge_path(issue_id: issue.id),
+                class: 'icon icon-copy' %>
+  </p>
+<% end %>
