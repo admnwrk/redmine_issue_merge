@@ -4,10 +4,10 @@ require_relative 'lib/redmine_issue_merge'
 
 Redmine::Plugin.register :redmine_issue_merge do
   name        'Redmine Issue Merge'
-  author      'Chris'
+  author      'admnwrk'
   description 'Fuehrt ein Duplikat-Ticket in ein bestehendes Ticket ueber: alle Inhalte als EIN Journal-Eintrag (in konfigurierbarem CSS-Kasten), Anhaenge umgehaengt, Duplikat als Duplikat verlinkt und geschlossen. Keine Schema-/DB-Migration noetig.'
   version     '1.3.0'
-  url         ''
+  url         'https://github.com/admnwrk/redmine_issue_merge'
   author_url  ''
 
   requires_redmine version_or_higher: '6.0.0'
