@@ -31,8 +31,11 @@ regular models are used.
 
 Mount/copy the `redmine_issue_merge` folder into `plugins/`, then:
 
-    docker compose exec redmine bundle exec rake redmine:plugins:migrate RAILS_ENV=production
-    docker compose restart redmine
+```bash
+docker compose exec redmine-container-name \
+   bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+docker compose restart redmine-container-name
+```
 
 There is no migration; the migrate task is convention only and does no harm.
 The restart is what actually loads the plugin code. No `bundle install` is
@@ -45,6 +48,7 @@ After the restart, set up two things:
 **1. Permission** under **Administration → Roles and permissions**: grant the
 **"Merge issues"** permission to the roles that are allowed to merge. Without
 it the action link does not appear.
+
 
 **2. Plugin settings** under **Administration → Plugins → Configure** (for the
 "Redmine Issue Merge" plugin):
@@ -63,6 +67,8 @@ it the action link does not appear.
 | **color** | Text colour, e.g. `#1a1a1a`. |
 
 ## Usage
+
+![Merge dialog](doc/merge-dialog.png)
 
 On the **duplicate's** issue page, open the **"Merge into another issue"** link
 in the action bar (`.contextual`, both the top and bottom bars, placed before

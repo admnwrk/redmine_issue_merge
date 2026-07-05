@@ -29,8 +29,11 @@ Redmine-Core-Dateien. Es werden ausschließlich die normalen Models verwendet.
 
 Ordner `redmine_issue_merge` nach `plugins/` mounten bzw. kopieren, dann:
 
-    docker compose exec redmine bundle exec rake redmine:plugins:migrate RAILS_ENV=production
-    docker compose restart redmine
+```bash
+docker compose exec redmine-container-name \
+  bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+docker compose restart redmine-container-name
+```
 
 Eine Migration existiert nicht; der Migrate-Task ist nur Konvention und schadet
 nicht. Entscheidend ist der Restart, damit der Plugin-Code geladen wird.
@@ -61,6 +64,8 @@ Recht erscheint der Aktionslink nicht.
 | **color** | Textfarbe, z. B. `#1a1a1a`. |
 
 ## Benutzung
+
+![Dialog Zusammenführung](doc/merge-dialog.png)
 
 Auf der Ticketseite des **Duplikats** in der Aktionsleiste (`.contextual`, oben
 und unten, jeweils vor dem „Mehr"-Menü) den Link **„In anderes Ticket
