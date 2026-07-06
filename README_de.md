@@ -22,12 +22,15 @@ Beim Überführen von Quellticket → Zielticket:
 4. Das Duplikat wird **geschlossen** (nicht gelöscht) und erhält einen
    Rückverweis im Journal – so kann man jederzeit nachschauen.
 
+**Hinweis**: Der Inhalt des Duplikats wird nicht zeitlich zwischensortiert.
+
 Keine Schema-Migration, kein manuelles SQL, keine Änderung an
 Redmine-Core-Dateien. Es werden ausschließlich die normalen Models verwendet.
 
 ## Installation (Docker-Volume-Mount)
 
-Ordner `redmine_issue_merge` nach `plugins/` mounten bzw. kopieren, dann:
+`git clone` das `redmine_issue_merge` Repository nach `plugins/` kopiere das
+Package dorthin, dann:
 
 ```bash
 docker compose exec redmine-container-name \
@@ -35,7 +38,7 @@ docker compose exec redmine-container-name \
 docker compose restart redmine-container-name
 ```
 
-Eine Migration existiert nicht; der Migrate-Task ist nur Konvention und schadet
+Es existiert keine Migration; der Migrate-Task ist nur Konvention und schadet
 nicht. Entscheidend ist der Restart, damit der Plugin-Code geladen wird.
 Ein `bundle install` ist nicht nötig (keine zusätzlichen Gems).
 
@@ -67,9 +70,9 @@ Recht erscheint der Aktionslink nicht.
 
 ![Dialog Zusammenführung](doc/merge-dialog.png)
 
-Auf der Ticketseite des **Duplikats** in der Aktionsleiste (`.contextual`, oben
-und unten, jeweils vor dem „Mehr"-Menü) den Link **„In anderes Ticket
-überführen"** öffnen. Zielticketnummer eingeben, Kopfzeile ggf. anpassen,
+Auf der Ticketseite des **Duplikats** in der Aktionsleiste (oben
+und unten, jeweils vor dem „Mehr"-Menü), den Link **„In anderes Ticket
+überführen"** anklicken. Zielticketnummer eingeben, Kopfzeile ggf. anpassen,
 absenden. Das Duplikat wird geschlossen, der Inhalt landet im Zielticket.
 
 ## Wie der CSS-Kasten funktioniert
@@ -83,22 +86,23 @@ CSS (border/padding/background-color/color aus den Einstellungen) kommt aus
 demselben Hook. Dieser Weg ist unabhängig davon, über welchen internen
 Render-Pfad Redmine die Notiz ausgibt (in 6.1 mehrfach umgebaut).
 
-Der Aktionslink wird ebenfalls per JavaScript in alle `.contextual`-Leisten
-eingebunden (jeweils vor `span.drdn`). Das Icon nutzt Redmines `sprite_icon`
-(Inline-SVG), damit es wie die übrigen Aktionslinks aussieht.
+Das Icon nutzt Redmines `sprite_icon` (Inline-SVG), damit es wie die übrigen 
+Aktionlinks aussieht.
 
 ## Hinweise / Grenzen
 
-- Ab v1.3.0 ist **Bearbeitungsrecht (`edit_issues`) auf beiden Projekten** nötig – dem des Duplikats und dem des Zieltickets. Private Notizen des Duplikats werden bewusst **nicht** übernommen.
+- Ab v1.3.0 ist **Bearbeitungsrecht (`edit_issues`) auf beiden Projekten** nötig – 
+  dem des Duplikats und dem des Zieltickets. Private Notizen des Duplikats werden 
+  bewusst **nicht** übernommen.
 - Die Mailverläufe werden 1:1 als Text übernommen (keine Datumssortierung,
   bewusst so gewollt). Reihenfolge = chronologisch nach Erstellung.
 - Inline per Dateiname referenzierte Bilder verlinken nach dem Umhängen
   weiterhin korrekt, da die Anhänge nun am Zielticket hängen.
 - Der Merge ist in eine Transaktion gekapselt: Schlägt ein Schritt fehl
   (z. B. Pflichtfeld beim Schließen), wird nichts verändert.
-- Das Schließen des Duplikats respektiert eure Workflow-Pflichtfelder. Erzwingt
-  euer Workflow beim Schließen Felder, kann der Merge daran scheitern – dann
-  Pflichtfelder lockern oder passenden Status wählen.
+- Das Schließen des Duplikats respektiert Workflow-Pflichtfelder. Erzwingt
+  ein Workflow beim Schließen Felder, kann der Merge daran scheitern – dann
+  die Pflichtfelder lockern oder passenden Status wählen.
 - Die Kasten-Darstellung und der contextual-Link benötigen aktiviertes
   JavaScript. Der eigentliche Merge (Datenübernahme) läuft rein serverseitig.
 

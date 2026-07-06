@@ -2,12 +2,9 @@
 
 Merge a duplicate issue into an existing one. Built for the dispatch workflow
 where an incoming mail without `[#issue-number]` in the subject spawns a second
-issue about the same topic.
+issue about the same topic. This is also valid for simply duplicated issues.
 
-Tested against Redmine 6.1.x (Ruby 3.4 / Rails 7.2) with CommonMark text
-formatting.
-
-> Deutsche Version: siehe [README_de.md](README_de.md).
+> German Version: check [README_de.md](README_de.md).
 
 ## What it does
 
@@ -29,7 +26,8 @@ regular models are used.
 
 ## Installation (Docker volume mount)
 
-Mount/copy the `redmine_issue_merge` folder into `plugins/`, then:
+`git clone` the `redmine_issue_merge` folder into your redmines `plugins/` folder, 
+or download the package into it, then:
 
 ```bash
 docker compose exec redmine-container-name \
@@ -48,7 +46,6 @@ After the restart, set up two things:
 **1. Permission** under **Administration → Roles and permissions**: grant the
 **"Merge issues"** permission to the roles that are allowed to merge. Without
 it the action link does not appear.
-
 
 **2. Plugin settings** under **Administration → Plugins → Configure** (for the
 "Redmine Issue Merge" plugin):
