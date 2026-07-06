@@ -78,7 +78,8 @@ issue.
 Redmine sanitizes every journal note on display; inline HTML with `style` would
 be stripped. The plugin solves this via JavaScript: a small script is injected
 into the page head (hook `view_layouts_base_html_head`), finds the note by an
-invisible marker (`%%MERGE%%`) at its start, removes the marker and adds the
+invisible marker (two U+2063 invisible-separator characters around `MERGE`) at
+its start, removes the marker and adds the
 class `redmine-merge-box` to the note container. The matching CSS
 (border/padding/background-color/color from the settings) is emitted from the
 same hook. This approach is independent of whichever internal render path
@@ -106,6 +107,6 @@ JavaScript (before `span.drdn`). Its icon uses Redmine's `sprite_icon`
 ## Uninstall
 
 Remove the plugin folder and restart Redmine. As there is no migration, no DB
-steps are needed. Existing merges remain intact; the invisible `%%MERGE%%`
-marker will then no longer be removed and shows up as a text line at the start
-of the affected note.
+steps are needed. Existing merges remain intact; the invisible marker will
+then no longer be removed by JavaScript, but since it consists of invisible
+Unicode characters, it does not show up as visible text in the affected note.

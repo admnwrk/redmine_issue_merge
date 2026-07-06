@@ -35,12 +35,13 @@ module RedmineIssueMerge
     end
 
     # Literales Heredoc: kein Ruby-Escaping, JS wird 1:1 ausgegeben.
-    # MARK muss mit RedmineIssueMerge::MARKER uebereinstimmen ('%%MERGE%%').
+    # MARK muss mit RedmineIssueMerge::MARKER uebereinstimmen
+    # (zwei mal U+2063 INVISIBLE SEPARATOR um "MERGE").
     def merge_script
       <<~'JS'
         <script>
         (function(){
-          var MARK = '%%MERGE%%';
+          var MARK = '⁣⁣MERGE⁣⁣';
 
           // 1) Merge-Notiz erkennen, Marker entfernen, Box-Klasse setzen.
           function decorate(root){

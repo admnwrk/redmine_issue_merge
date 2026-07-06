@@ -80,7 +80,8 @@ absenden. Das Duplikat wird geschlossen, der Inhalt landet im Zielticket.
 Redmine sanitized jede Journal-Notiz beim Anzeigen; Inline-HTML mit `style`
 würde entfernt. Das Plugin löst das per JavaScript: Ein kleines Skript wird in
 den Seitenkopf injiziert (Hook `view_layouts_base_html_head`), findet die Notiz
-an einem unsichtbaren Marker (`%%MERGE%%`) am Notizanfang, entfernt den Marker
+an einem unsichtbaren Marker (zwei Unicode-Zeichen U+2063 um `MERGE`) am
+Notizanfang, entfernt den Marker
 und setzt die Klasse `redmine-merge-box` auf den Notiz-Container. Das zugehörige
 CSS (border/padding/background-color/color aus den Einstellungen) kommt aus
 demselben Hook. Dieser Weg ist unabhängig davon, über welchen internen
@@ -110,5 +111,6 @@ Aktionlinks aussieht.
 
 Plugin-Ordner entfernen und Redmine neu starten. Da keine Migration existiert,
 sind keine DB-Schritte nötig. Bereits erfolgte Merges bleiben erhalten; der
-unsichtbare Marker `%%MERGE%%` wird dann nicht mehr entfernt und erscheint als
-Textzeile am Anfang der jeweiligen Notiz.
+unsichtbare Marker wird dann nicht mehr per JavaScript entfernt, bleibt aber
+wegen der unsichtbaren Unicode-Zeichen unsichtbar am Anfang der jeweiligen
+Notiz.
